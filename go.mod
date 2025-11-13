@@ -1,6 +1,6 @@
 module github.com/TimNekk/go-magistr-lesson1-tpl
 
-go 1.24.2
+go 1.22.12
 
 require (
 	github.com/google/go-querystring v1.1.0 // indirect
