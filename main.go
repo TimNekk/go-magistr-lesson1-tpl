@@ -70,8 +70,7 @@ func monitor(ctx context.Context) {
 
 		if stats.NetworkBandwidthBytesPerSec > 0 {
 			NetworkUsagePercent := (stats.NetworkUsageBytesPerSec * 100) / stats.NetworkBandwidthBytesPerSec
-			NetworkAvailableBytesPerSec := stats.NetworkBandwidthBytesPerSec - stats.NetworkUsageBytesPerSec
-			NetworkAvailableMegaBitsPerSec := (NetworkAvailableBytesPerSec * 8) / 1000000
+			NetworkAvailableMegaBitsPerSec := (stats.NetworkBandwidthBytesPerSec - stats.NetworkUsageBytesPerSec) / 1000000
 			if NetworkUsagePercent > 90 {
 				fmt.Fprintf(os.Stdout, "Network bandwidth usage high: %d Mbit/s available\n", NetworkAvailableMegaBitsPerSec)
 			}
