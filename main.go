@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 	"errors"
-	"log"
+	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -44,18 +45,18 @@ func monitor(ctx context.Context) {
 		}
 
 		if stats == nil {
-			log.Println("Unable to fetch server statistic")
+			fmt.Fprintln(os.Stdout, "Unable to fetch server statistic")
 			continue
 		}
 
 		if stats.LoadAverage > 30 {
-			log.Printf("Load Average is too high: %d\n", stats.LoadAverage)
+			fmt.Fprintf(os.Stdout, "Load Average is too high: %d\n", stats.LoadAverage)
 		}
 
 		if stats.MemoryTotalBytes > 0 {
 			memoryUsagePercent := (stats.MemoryUsedBytes * 100) / stats.MemoryTotalBytes
 			if memoryUsagePercent > 80 {
-				log.Printf("Memory usage too high: %d%%\n", memoryUsagePercent)
+				fmt.Fprintf(os.Stdout, "Memory usage too high: %d%%\n", memoryUsagePercent)
 			}
 		}
 
@@ -63,15 +64,15 @@ func monitor(ctx context.Context) {
 			diskUsagePercent := (stats.DiskUsedBytes * 100) / stats.DiskTotalBytes
 			diskLeftMegaBytes := (stats.DiskTotalBytes - stats.DiskUsedBytes) / 1024 / 1024
 			if diskUsagePercent > 90 {
-				log.Printf("Free disk space is too low: %d Mb left", diskLeftMegaBytes)
+				fmt.Fprintf(os.Stdout, "Free disk space is too low: %d Mb left\n", diskLeftMegaBytes)
 			}
 		}
 
 		if stats.NetworkBandwidthBytesPerSec > 0 {
 			NetworkUsagePercent := (stats.NetworkUsageBytesPerSec * 100) / stats.NetworkBandwidthBytesPerSec
-			NetworkAvailableMegaBitsPerSec := (stats.NetworkBandwidthBytesPerSec - stats.NetworkUsageBytesPerSec) * 8 / 1024 / 1024
+			NetworkAvailableMegaBitsPerSec := (stats.NetworkBandwidthBytesPerSec - stats.NetworkUsageBytesPerSec) / 1000000
 			if NetworkUsagePercent > 90 {
-				log.Printf("Network bandwidth usage high: %d Mbit/s available", NetworkAvailableMegaBitsPerSec)
+				fmt.Fprintf(os.Stdout, "Network bandwidth usage high: %d Mbit/s available\n", NetworkAvailableMegaBitsPerSec)
 			}
 		}
 	}
